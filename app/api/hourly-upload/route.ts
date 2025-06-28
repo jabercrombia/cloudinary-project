@@ -1,7 +1,6 @@
 import type { NextRequest } from 'next/server';
 import axios from 'axios';
 import cloudinary from 'cloudinary';
-import stream from 'stream';
 
 export const config = {
   schedule: '0 * * * *', // every hour at minute 0
