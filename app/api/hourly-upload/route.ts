@@ -33,7 +33,7 @@ async function uploadImageFromUrl(url: string, publicId: string) {
 export async function GET() {
   try {
     const githubResponse = await axios.get(
-      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/images`,
+      `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/images`,
       {
         headers: {
           // Optional: add GitHub token here if you hit rate limits
