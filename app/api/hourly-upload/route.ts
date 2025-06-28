@@ -1,4 +1,3 @@
-import type { NextRequest } from 'next/server';
 import axios from 'axios';
 import cloudinary from 'cloudinary';
 
