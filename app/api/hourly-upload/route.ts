@@ -19,9 +19,19 @@ async function uploadImageFromUrl(url: string, publicId: string) {
       responseType: 'stream',
     }).then(response => {
       const uploadStream = cloudinary.v2.uploader.upload_stream(
-        { folder: 'github-images', public_id: publicId,transformation: [
-            { width: 500, height: 400, crop: 'fill' }
-          ], },
+        { 
+            folder: 'product-images', 
+            public_id: publicId,
+            format: 'webp',
+            transformation: [
+                { 
+                    width: 500, 
+                    height: 400, 
+                    crop: 'fill' ,
+                    
+                }
+            ], 
+        },
         (error, result) => {
           if (error) reject(error);
           else resolve(result!);
@@ -32,6 +42,8 @@ async function uploadImageFromUrl(url: string, publicId: string) {
   });
 }
 
+// example here is pullimg images from a directory
+// there is where you could utilize Bynder, Lucid Link, Salsify
 export async function GET() {
   try {
     const githubResponse = await axios.get(
