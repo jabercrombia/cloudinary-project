@@ -12,9 +12,6 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
 
-const GITHUB_OWNER = 'your-username';
-const GITHUB_REPO = 'your-repo';
-
 async function uploadImageFromUrl(url: string, publicId: string) {
   return new Promise<cloudinary.UploadApiResponse>((resolve, reject) => {
     axios({
@@ -34,7 +31,7 @@ async function uploadImageFromUrl(url: string, publicId: string) {
   });
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const githubResponse = await axios.get(
       `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/images`,
