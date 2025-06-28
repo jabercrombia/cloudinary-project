@@ -2,7 +2,7 @@ import axios from 'axios';
 import cloudinary from 'cloudinary';
 
 export const config = {
- schedule: '*/10 * * * *',
+ schedule: '*/5 * * * *',
 };
 
 cloudinary.v2.config({
