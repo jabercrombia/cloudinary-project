@@ -3,7 +3,7 @@ import axios from 'axios';
 import cloudinary from 'cloudinary';
 
 export const config = {
-  schedule: '0 * * * *', // every hour at minute 0
+ schedule: '*/10 * * * *',
 };
 
 cloudinary.v2.config({
