@@ -1,4 +1,3 @@
-
 # Scheduled Image Upload and Resize Script
 
 This script is a **Vercel serverless function** scheduled to run **once daily at midnight UTC**. It automatically:
@@ -17,7 +16,7 @@ This script is a **Vercel serverless function** scheduled to run **once daily at
 
 ```ts
 export const config = {
-  schedule: '0 0 * * *', // runs once daily at midnight UTC
+  schedule: "0 0 * * *", // runs once daily at midnight UTC
 };
 ```
 
@@ -56,25 +55,25 @@ async function uploadImageFromUrl(url: string, publicId: string) {
   return new Promise<cloudinary.UploadApiResponse>((resolve, reject) => {
     axios({
       url,
-      method: 'GET',
-      responseType: 'stream',
-    }).then(response => {
-      const uploadStream = cloudinary.v2.uploader.upload_stream(
-        { 
-          folder: 'product-images', 
-          public_id: publicId,
-          format: 'webp',
-          transformation: [
-            { width: 500, height: 400, crop: 'fill' },
-          ],
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result!);
-        }
-      );
-      response.data.pipe(uploadStream);
-    }).catch(reject);
+      method: "GET",
+      responseType: "stream",
+    })
+      .then((response) => {
+        const uploadStream = cloudinary.v2.uploader.upload_stream(
+          {
+            folder: "product-images",
+            public_id: publicId,
+            format: "webp",
+            transformation: [{ width: 500, height: 400, crop: "fill" }],
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result!);
+          }
+        );
+        response.data.pipe(uploadStream);
+      })
+      .catch(reject);
   });
 }
 ```
@@ -98,62 +97,23 @@ The scheduled `GET` handler:
 
 5. Returns a JSON response listing uploaded files and URLs
 
-```ts
-export async function GET() {
-  try {
-    const githubResponse = await axios.get(
-      `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/images`,
-      {
-        headers: {
-          // Optional: add GitHub token if rate limited
-          // Authorization: `token ${process.env.GITHUB_TOKEN}`,
-          Accept: 'application/vnd.github.v3+json',
-        },
-      }
-    );
-
-    type GitHubFile = {
-      name: string;
-      download_url: string;
-      type: string;
-    };
-
-    const files: GitHubFile[] = githubResponse.data;
-
-    const imageFiles = files.filter(
-      (file) =>
-        file.type === 'file' &&
-        /\.(jpe?g|png|gif|webp)$/i.test(file.name)
-    );
-
-    const uploadResults: { file: string; url: string }[] = [];
-
-    for (const file of imageFiles) {
-      const rawUrl = file.download_url;
-      const publicId = file.name.replace(/\.[^/.]+$/, '');
-
-      try {
-        const result = await uploadImageFromUrl(rawUrl, publicId);
-        uploadResults.push({ file: file.name, url: result.secure_url });
-        console.log(`Uploaded ${file.name} → ${result.secure_url}`);
-      } catch (error) {
-        console.error(`Failed to upload ${file.name}:`, (error as Error).message);
-      }
+```json
+{
+  "message": "Upload complete",
+  "uploaded": [
+    {
+      "file": "airfryer.webp",
+      "url": "https://res.cloudinary.com/dznugshvp/image/upload/v1751083141/github-images/airfryer.webp"
+    },
+    {
+      "file": "blender.webp",
+      "url": "https://res.cloudinary.com/dznugshvp/image/upload/v1751083141/github-images/blender.webp"
+    },
+    {
+      "file": "fan.jpg",
+      "url": "https://res.cloudinary.com/dznugshvp/image/upload/v1751083142/github-images/fan.jpg"
     }
-
-    return new Response(
-      JSON.stringify({
-        message: 'Upload complete',
-        uploaded: uploadResults,
-      }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ error: (error as Error).message }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
-  }
+  ]
 }
 ```
 
@@ -161,14 +121,14 @@ export async function GET() {
 
 ## Environment Variables Required
 
-| Variable                 | Description                      |
-|--------------------------|--------------------------------|
-| `CLOUDINARY_CLOUD_NAME`  | Your Cloudinary cloud name      |
-| `CLOUDINARY_API_KEY`     | Cloudinary API key              |
-| `CLOUDINARY_API_SECRET`  | Cloudinary API secret           |
-| `GITHUB_OWNER`           | GitHub repo owner (username/org)|
-| `GITHUB_REPO`            | GitHub repo name                |
-| `GITHUB_TOKEN` (optional)| GitHub Personal Access Token, if accessing private repos or to avoid rate limits |
+| Variable                  | Description                                                                      |
+| ------------------------- | -------------------------------------------------------------------------------- |
+| `CLOUDINARY_CLOUD_NAME`   | Your Cloudinary cloud name                                                       |
+| `CLOUDINARY_API_KEY`      | Cloudinary API key                                                               |
+| `CLOUDINARY_API_SECRET`   | Cloudinary API secret                                                            |
+| `GITHUB_OWNER`            | GitHub repo owner (username/org)                                                 |
+| `GITHUB_REPO`             | GitHub repo name                                                                 |
+| `GITHUB_TOKEN` (optional) | GitHub Personal Access Token, if accessing private repos or to avoid rate limits |
 
 ---
 
