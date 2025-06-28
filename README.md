@@ -142,7 +142,7 @@ The scheduled `GET` handler:
 
 ## License
 
-MIT © Your Name or Company
+MIT © Justin Abercrombia
 
 ---
 
