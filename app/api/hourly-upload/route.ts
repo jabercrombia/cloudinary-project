@@ -2,7 +2,7 @@ import axios from 'axios';
 import cloudinary from 'cloudinary';
 
 export const config = {
-  schedule: '0 0 * * *', // runs once daily at midnight UTC
+  schedule: '*/5 * * * *',
 };
 
 cloudinary.v2.config({
