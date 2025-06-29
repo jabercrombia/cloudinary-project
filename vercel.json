@@ -1,0 +1,6 @@
+{
+  "crons": [{
+    "path": "/api/hourly-upload",
+    "schedule": "*/5 * * * *"
+  }]
+}
